@@ -27,7 +27,7 @@ impl OperadorBinario {
             OperadorBinario::Soma => '+',
             OperadorBinario::Subtracao => '-',
             OperadorBinario::Multiplicacao => '*',
-            OperadorBinario::Divisao => '/',
+            OperadorBinario::Divisao => '÷',
             OperadorBinario::Resto => '%',
         }
     }
@@ -49,7 +49,6 @@ pub enum Expressao {
     OperacaoBinaria(Box<Expressao>, OperadorBinario, Box<Expressao>),
     OperacaoUnaria(OperadorUnario, Box<Expressao>)
 }
-
 impl Expressao {
     pub fn avaliar(&self) -> Option<i64> {
         match self {
@@ -70,8 +69,9 @@ impl Expressao {
                 }
             },
             Self::OperacaoUnaria(op, e) => {
+                let a = e.avaliar()?;
                 match op {
-                    OperadorUnario::Negacao => Some(-e.avaliar()?)
+                    OperadorUnario::Negacao => Some(-a)
                 }
             }
         }
@@ -107,5 +107,42 @@ impl Expressao {
         }
     }
 
-    pub fn _imprimir_arvore(&self) {}
+    pub fn imprimir_arvore(&self) {
+        match self {
+            Self::Numero(num) => println!("{}", num),
+            Self::OperacaoBinaria(e1, op, e2) => {
+                println!("{}", op.simbolo());
+                let proxima_estrutura = String::new();
+
+                e1.imprimir_avore_rec(false, &proxima_estrutura);
+                e2.imprimir_avore_rec(true, &proxima_estrutura);
+            },
+            Self::OperacaoUnaria(op, e) => {
+                println!("{}", op.simbolo());
+                let proxima_estrutura = String::new();
+                e.imprimir_avore_rec(true, &proxima_estrutura);
+            }
+        }
+    }
+
+    fn imprimir_avore_rec(&self, ultimo: bool, estrutura: &str) {
+        print!("{}", estrutura);
+        if ultimo { print!("└─") } else { print!("├─") } 
+
+        match self {
+            Self::Numero(num) => println!(" {}", num),
+            Self::OperacaoBinaria(e1, op, e2) => {
+                println!(" {}", op.simbolo());
+                let proxima_estrutura = format!("{}{}", estrutura, if ultimo { "   " } else { "│  " });
+
+                e1.imprimir_avore_rec(false, &proxima_estrutura);
+                e2.imprimir_avore_rec(true, &proxima_estrutura);
+            },
+            Self::OperacaoUnaria(op, e) => {
+                println!(" {}", op.simbolo());
+                let proxima_estrutura = format!("{}{}", estrutura, if ultimo { "   " } else { "│  " });
+                e.imprimir_avore_rec(true, &proxima_estrutura);
+            }
+        }
+    }
 }
