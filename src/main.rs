@@ -189,6 +189,7 @@ fn main() {
             Negacao,
             Box::new(Numero(5)))),
     );
+
     println!("");
     println!("// exp12");
     exp12.imprimir();
