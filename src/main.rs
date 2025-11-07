@@ -189,8 +189,6 @@ fn main() {
             Negacao,
             Box::new(Numero(5)))),
     );
-
-    // Bloco para testar a exp12
     println!("");
     println!("// exp12");
     exp12.imprimir();
